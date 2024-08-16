@@ -10,6 +10,9 @@ public class ObjectSpawner : MonoBehaviour
     [SerializeField, Range(0f, 10f), Tooltip("How often to spawn objects in seconds")]
     private float spawnFrequency = 2f;
 
+    [SerializeField, Range(0f, 5f), Tooltip("How far to check for nearby objects at a spawn point before allowing a spawn")]
+    private float spawnScanRange = 1f;
+
     [SerializeField]
     private ObjectPoolingManager objectPoolingManager;
     private GameObjectStopwatch stopwatch;
@@ -55,9 +58,17 @@ public class ObjectSpawner : MonoBehaviour
 
     private void SpawnObject()
     {
-        // TODO: Find a way to make sure this doesn't overlap with other objects
         GameObject obj = objectPoolingManager.GetObject();
-        Vector2 spawnPoint = GetRandomSpawnPoint();
+
+        Vector2 spawnPoint = Vector2.zero;
+        Collider2D[] nearbyColliders = new Collider2D[1] { new Collider2D() };
+
+        // Get a spawn point that's away from other objects or is after 50 attempts to do so failed
+        for (int index = 0; index < 50 && nearbyColliders.Length > 0; index++)
+        {
+            spawnPoint = GetRandomSpawnPoint();
+            nearbyColliders = Physics2D.OverlapCircleAll(spawnPoint, spawnScanRange);
+        }
 
         // Set the object's new position
         obj.transform.position = spawnPoint;
