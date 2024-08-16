@@ -31,16 +31,6 @@ public class Magnet : MonoBehaviour
 
     private void MoveRigidbodyTowardsMagnet(Rigidbody2D rBody)
     {
-        // Calculate direction from this object to the other object
-        Vector2 direction = rBody.transform.position - transform.position;
-        direction.Normalize(); // Ensure the direction vector has a magnitude of 1
-
-        // Apply force to the other object in the direction away from this object
-        rBody.AddForce(direction * 5f, ForceMode2D.Impulse);
-
-        // Start the friction coroutine
-        // StartCoroutine(ApplyFriction(rBody));
-        return;
         // Get positional helpers
         Vector3 directionToMove = rBody.transform.position + this.GetCenterOfMass(rBody);
         Vector3 positionToMove = this.GetPositionToMoveRigidBody(rBody, directionToMove);
@@ -48,26 +38,6 @@ public class Magnet : MonoBehaviour
         // Move rBody towards the magnet (static movement speed)
         float scaler = force * Time.deltaTime;
         rBody.velocity = scaler * positionToMove;
-    }
-
-    private System.Collections.IEnumerator ApplyFriction(Rigidbody2D rBody)
-    {
-        float frictionDuration = 1f;
-        float frictionAmount = 0.95f;
-        float elapsedTime = 0f;
-
-        // Gradually reduce the velocity to simulate friction
-        while (elapsedTime < frictionDuration)
-        {
-            rBody.velocity *= frictionAmount;
-
-            // Wait for the next frame before continuing
-            yield return new WaitForFixedUpdate();
-            elapsedTime += Time.fixedDeltaTime;
-        }
-
-        // Set velocity to zero when the friction duration is over
-        rBody.velocity = Vector2.zero;
     }
 
     private Vector3 GetPositionToMoveRigidBody(Rigidbody2D rBody, Vector3 directionToMove)
