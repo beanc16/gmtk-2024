@@ -1,0 +1,95 @@
+# =============== #
+# Unity generated #
+# =============== #
+/Temp/
+/Obj/
+/UnityGenerated/
+/Library/
+/Logs/
+/UserSettings/
+/Recordings/
+/Builds/
+
+# ===================================== #
+# Visual Studio / MonoDevelop generated #
+# ===================================== #
+ExportedObj/
+.settings/
+*.svd
+*.userprefs
+*.csproj
+*.pidb
+*.suo
+*.sln
+*.user
+*.unityproj
+*.booproj
+*.vsconfig
+*.vscode
+
+# ================= #
+# UnityVS generated #
+# ================= #
+Assets/UnityVS.meta
+Assets/UnityVS/
+.vs/
+
+# =============== #
+# Rider generated #
+# =============== #
+/[Aa]ssets/Plugins/Editor/JetBrains*
+
+# ============ #
+# OS generated #
+# ============ #
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+/AssetBundles/
+/.idea/
+
+/Assets/Plugins/Editor.meta
+/Assets/Plugins/Editor/*
+
+/Assets/StreamingAssets*
+
+token.json/*
+
+# Ubuntu crashes
+mono_crash.mem.*
+
+# ============== #
+# FMOD generated #
+# ============== #
+
+# Never ignore DLLs in the FMOD subfolder.
+!/[Aa]ssets/Plugins/FMOD/**/lib/*
+
+# Don't ignore images and gizmos used by FMOD in the Unity Editor.
+!/[Aa]ssets/Gizmos/FMOD/*
+!/[Aa]ssets/Editor Default Resources/FMOD/*
+                    
+# Ignore the Cache folder since it is updated locally.
+/[Aa]ssets/Plugins/FMOD/Cache/*
+                    
+# Ignore bank files in the StreamingAssets folder.
+/[Aa]ssets/StreamingAssets/**/*.bank
+/[Aa]ssets/StreamingAssets/**/*.bank.meta
+                    
+# If the source bank files are kept outside of the StreamingAssets folder then these can be ignored.
+# Log files can be ignored.
+fmod_editor.log
+
+# Ignore bank files in the StreamingAssets folder.
+/[Aa]ssets/StreamingAssets/**/*.bank
+/[Aa]ssets/StreamingAssets/**/*.bank.meta
+
+/SourceFiles/FMOD/*/**.user
+/SourceFiles/FMOD/*/**.unsaved
+/SourceFiles/FMOD/*/**.cache
+/SourceFiles/FMOD/*/**.restore
