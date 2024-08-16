@@ -14,6 +14,10 @@ public class Mergable : MonoBehaviour
     [HideInInspector]
     public bool isMerging = false;
 
+    private ObjectPoolingManager objectPoolingManager;
+
+    private Vector3 startingScale;
+
     public float Area
     {
         get
@@ -22,6 +26,13 @@ public class Mergable : MonoBehaviour
             float radius = this.transform.localScale.x / 2f;
             return Mathf.PI * Mathf.Pow(radius, 2);
         }
+    }
+
+    private void Start()
+    {
+        objectPoolingManager = FindObjectOfType<ObjectPoolingManager>();
+
+        startingScale = transform.localScale;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -152,17 +163,29 @@ public class Mergable : MonoBehaviour
         transform.localScale = newScale;
         transform.position = centerOfMass;
 
-        // Destroy all other mergables that were merged into this one
+        // Hide all other mergables that were merged into this one
         foreach (var mergable in mergables)
         {
             if (mergable != this)
             {
-                Destroy(mergable.gameObject);
+                mergable.Hide();
             }
         }
 
         // Mark the merge process as complete
         isMerging = false;
+    }
+
+    public void Hide()
+    {
+        // Hide this gameobject
+        gameObject.SetActive(false);
+
+        // Finish merging
+        isMerging = false;
+
+        // Reset the scale after merge animation
+        transform.localScale = startingScale;
     }
 }
 
