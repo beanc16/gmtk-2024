@@ -1,0 +1,222 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System.Linq;
+
+[RequireComponent(typeof (PolygonCollider2D))]
+public class SoftBody2D : MonoBehaviour
+{
+    private Mesh mesh;
+    private Vector3[] vertices;
+
+    private PolygonCollider2D collider;
+
+    [SerializeField, Range(3, 20), Tooltip("Number of points to give this SoftBody")]
+    private int numberOfPoints = 10;
+
+    [SerializeField]
+    private List<GameObject> points = new List<GameObject>();
+    [SerializeField]
+    private GameObject pointPrefab;
+
+    private GameObject centerPoint;
+
+    public float Radius
+    {
+        get => this.transform.localScale.x / 2f;
+    }
+
+    public Vector3 centerOfMass // (camelCase to match RigidBody2D's casing)
+    {
+        get
+        {
+            Vector2 centerOfMass = Vector3.zero;
+            float totalMass = 0f;
+
+            foreach (var point in points)
+            {
+                Rigidbody2D rb = point.GetComponent<Rigidbody2D>();
+                centerOfMass += rb.worldCenterOfMass * rb.mass;
+                totalMass += rb.mass;
+            }
+
+            return centerOfMass / totalMass;
+        }
+    }
+
+    public Vector2 velocity // (camelCase to match RigidBody2D's casing)
+    {
+        set
+        {
+            foreach (var point in points)
+            {
+                Rigidbody2D rb = point.GetComponent<Rigidbody2D>();
+                rb.velocity = value;
+            }
+        }
+    }
+
+    public void AddForce(Vector2 force, ForceMode2D mode = ForceMode2D.Force)
+    {
+        // Apply force to each point's Rigidbody2D
+        foreach (var point in points)
+        {
+            Rigidbody2D rb = point.GetComponent<Rigidbody2D>();
+            rb.AddForce(force, mode);
+        }
+    }
+
+    private void Awake()
+    {
+        mesh = new Mesh();
+        GetComponent<MeshFilter>().mesh = mesh;
+        // mesh = GetComponent<MeshFilter>().mesh;
+        InitializeVertices();
+        InitializeJoints();
+        UpdateMesh();
+    }
+
+    private void InitializeVertices()
+    {
+        vertices = new Vector3[numberOfPoints];
+
+        // Create and place central point
+        centerPoint = Instantiate(
+            pointPrefab,
+            this.transform.position,
+            Quaternion.identity
+        );
+        Rigidbody2D centerPointRb = centerPoint.GetComponent<Rigidbody2D>();
+        // centerPointRb.isKinematic = true;  // Fix the center point in place
+        centerPoint.transform.SetParent(this.transform);
+
+        // Initialize points
+        for (int index = 0; index < numberOfPoints; index++)
+        {
+            // Calculate position of vertex
+            float angle = index * Mathf.PI * 2f / numberOfPoints;
+            Vector3 position = new Vector3(
+                Mathf.Cos(angle),
+                Mathf.Sin(angle),
+                0
+            ) * this.Radius;
+
+            // Instantiate points at vertex
+            GameObject obj = Instantiate(
+                pointPrefab,
+                this.transform.position + position,
+                Quaternion.identity
+            );
+            obj.transform.SetParent(this.transform);
+            points.Add(obj);
+
+            // Update vertices
+            vertices[index] = obj.transform.localPosition;
+        }
+
+        collider = GetComponent<PolygonCollider2D>();
+        UpdateColliderPath();
+    }
+
+    private void InitializeJoints()
+    {
+        // Connect points with hinge joints to form a closed loop
+        for (int index = 0; index < points.Count; index++)
+        {
+            SpringJoint2D jointToAdjacentPoint = points[index].AddComponent<SpringJoint2D>();
+
+            // Connect the last point to the first point
+            if (index == points.Count - 1)
+            {
+                jointToAdjacentPoint.connectedBody = points[0].GetComponent<Rigidbody2D>();
+            }
+
+            // Connect this point to the next point
+            else
+            {
+                jointToAdjacentPoint.connectedBody = points[index + 1].GetComponent<Rigidbody2D>();
+            }
+
+            jointToAdjacentPoint.autoConfigureDistance = false;
+            jointToAdjacentPoint.distance = Radius * 0.8f; // Maintain close proximity
+            jointToAdjacentPoint.dampingRatio = 0.3f; // Moderate damping
+            jointToAdjacentPoint.frequency = 3f; // Higher frequency for stronger connection
+
+            // Connect to the central point using a FixedJoint2D
+            SpringJoint2D jointToCenter = points[index].AddComponent<SpringJoint2D>();
+            jointToCenter.connectedBody = centerPoint.GetComponent<Rigidbody2D>();
+            jointToCenter.autoConfigureDistance = false;
+            jointToCenter.distance = Radius * 0.9f; // Slightly less room to stretch
+            jointToCenter.dampingRatio = 0.5f; // Stronger damping to prevent collapse
+            jointToCenter.frequency = 4f; // Higher frequency for more stability
+        }
+
+        // Add diagonal spring joints for internal stability
+        for (int i = 0; i < points.Count; i++)
+        {
+            for (int j = i + 2; j < points.Count; j++)
+            {
+                SpringJoint2D diagonalJoint = points[i].AddComponent<SpringJoint2D>();
+                diagonalJoint.connectedBody = points[j].GetComponent<Rigidbody2D>();
+                diagonalJoint.autoConfigureDistance = false;
+                diagonalJoint.distance = Vector3.Distance(
+                    points[i].transform.position,
+                    points[j].transform.position
+                );
+                diagonalJoint.dampingRatio = 0.3f;
+                diagonalJoint.frequency = 2f;
+            }
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        // Update vertex positions based on points' positions
+        for (int index = 0; index < vertices.Length; index++)
+        {
+            vertices[index] = points[index].transform.localPosition;
+        }
+
+        mesh.vertices = vertices;
+        mesh.RecalculateBounds();
+
+        // Update collider path to match the current positions of points
+        UpdateColliderPath();
+    }
+
+    private void UpdateMesh()
+    {
+        mesh.Clear();
+
+        // Create triangles
+        int[] triangles = new int[(numberOfPoints - 2) * 3];
+        for (int index = 0; index < numberOfPoints - 2; index++)
+        {
+            triangles[index * 3] = 0;
+            triangles[index * 3 + 1] = index + 1;
+            triangles[index * 3 + 2] = index + 2;
+        }
+
+        // Set mesh properties
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
+        mesh.RecalculateNormals();
+    }
+
+    private void UpdateColliderPath()
+    {
+        // Update collider path to match the current positions of points
+        List<Vector2> colliderPoints = new List<Vector2>();
+
+        foreach (var point in points)
+        {
+            Vector2 position = new Vector2(
+                point.transform.position.x,
+                point.transform.position.y
+            );
+            colliderPoints.Add(position);
+        }
+
+        collider.SetPath(0, colliderPoints);
+    }
+}
