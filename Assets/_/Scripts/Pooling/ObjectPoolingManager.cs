@@ -12,6 +12,11 @@ public class ObjectPoolingManager : MonoBehaviour
 
     private List<GameObject> pool;
 
+    public List<GameObject> Pool
+    {
+        get => pool;
+    }
+
     private void Awake()
     {
         // Initialize list

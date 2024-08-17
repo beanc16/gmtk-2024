@@ -9,12 +9,26 @@ namespace Beanc16.Common.Mechanics.Follow
         private float moveSpeed = 0.1f;
 
         private Vector3 mousePosition;
+        private Collider2D collider;
         private Rigidbody2D rigidBody;
         private Vector2 position = new Vector2(0f, 0f);
+
+        private void Awake()
+        {
+            /*
+             * Temporarily disable collision detection. For some reason
+             * Unity gets weird when the game starts and can cause the
+             * follower to jitter and snap to the mouse's location on
+             * game startup. So disable collision detection until later.
+             */
+            this.collider = GetComponent<Collider2D>();
+            this.collider.enabled = false;
+        }
 
         private void Start()
         {
             this.rigidBody = GetComponent<Rigidbody2D>();
+            this.collider.enabled = true;
         }
 
         private void Update()

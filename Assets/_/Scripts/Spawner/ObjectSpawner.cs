@@ -13,8 +13,19 @@ public class ObjectSpawner : MonoBehaviour
     [SerializeField, Range(0f, 5f), Tooltip("How far to check for nearby objects at a spawn point before allowing a spawn")]
     private float spawnScanRange = 1f;
 
+    [SerializeField, Range(1f, 100f), Tooltip("How much to reduce spawnFrequency by whenever a new largest object is made")]
+    private float largestObjectScaleDivisor = 1f;
+    [SerializeField, Range(0f, 1f), Tooltip("How much to increment largestObjectScaleDivisor by whenever a new largest object is made")]
+    private float largestObjectScaleIncrementer = 0.1f;
+
+    private float SpawnFrequency
+    {
+        get => spawnFrequency / largestObjectScaleDivisor;
+    }
+
     [SerializeField]
     private ObjectPoolingManager objectPoolingManager;
+    private LargestObjectFinder largestObjectFinder;
     private GameObjectStopwatch stopwatch;
 
     private float TopOfScreen
@@ -39,6 +50,7 @@ public class ObjectSpawner : MonoBehaviour
 
     private void Start()
     {
+        largestObjectFinder = FindObjectOfType<LargestObjectFinder>();
         stopwatch = GetComponent<GameObjectStopwatch>();
 
         for (int index = 0; index < startingObjectCount; index++)
@@ -49,7 +61,7 @@ public class ObjectSpawner : MonoBehaviour
 
     private void Update()
     {
-        if (stopwatch.TimeSinceLapMarked >= spawnFrequency)
+        if (stopwatch.TimeSinceLapMarked >= SpawnFrequency)
         {
             stopwatch.MarkLap();
             this.SpawnObject();
@@ -76,8 +88,13 @@ public class ObjectSpawner : MonoBehaviour
 
     private Vector2 GetRandomSpawnPoint()
     {
-        float xPosition = Random.Range(LeftOfScreen, RightOfScreen);
-        float yPosition = Random.Range(BottomOfScreen, TopOfScreen);
+        float xPosition = Random.Range(LeftOfScreen + 0.5f, RightOfScreen - 0.5f);
+        float yPosition = Random.Range(BottomOfScreen + 0.5f, TopOfScreen - 0.5f);
         return new Vector2(xPosition, yPosition);
+    }
+
+    public void UpdateLargestObjectScaleMultiplier()
+    {
+        largestObjectScaleDivisor += largestObjectScaleIncrementer;
     }
 }

@@ -2,11 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Mergable : MonoBehaviour
 {
     [SerializeField, Range(0f, 25f), Tooltip("How quickly the objects should merge")]
     private float mergeSpeed = 5f;
+
+    [SerializeField, Range(0f, 2f), Tooltip("How much larger merged objects should be")]
+    private float mergeMultiplier = 2f;
 
     [SerializeField, Range(0f, 1f), Tooltip("How far to check for other mergables to merge when two mergables collide")]
     private float mergableDetectionRange = 1f;
@@ -14,9 +18,16 @@ public class Mergable : MonoBehaviour
     [HideInInspector]
     public bool isMerging = false;
 
-    private ObjectPoolingManager objectPoolingManager;
-
     private Vector3 startingScale;
+
+    // For UI
+    private int numOfTimesMerged = 1;
+    public int NumOfTimesMerged { get => numOfTimesMerged; }
+    private TextMeshProUGUI numOfTimesMergedText;
+
+    // Other objects
+    private ObjectPoolingManager objectPoolingManager;
+    private LargestObjectFinder largestObjectFinder;
 
     public float Area
     {
@@ -30,7 +41,17 @@ public class Mergable : MonoBehaviour
 
     private void Start()
     {
+        // Set up canvas
+        Canvas canvas = GetComponentInChildren<Canvas>();
+        canvas.worldCamera = Camera.main;
+
+        // Set up UI
+        numOfTimesMergedText = this.GetComponentInChildren<TextMeshProUGUI>();
+        numOfTimesMergedText.text = numOfTimesMerged.ToString();
+
+        // Find necessary objects
         objectPoolingManager = FindObjectOfType<ObjectPoolingManager>();
+        largestObjectFinder = FindObjectOfType<LargestObjectFinder>();
 
         startingScale = transform.localScale;
     }
@@ -63,7 +84,10 @@ public class Mergable : MonoBehaviour
         // Check for additional nearby mergables and add them to the merge list
         foreach (var contact in collision.contacts)
         {
-            Collider2D[] nearbyColliders = Physics2D.OverlapCircleAll(contact.point, mergableDetectionRange);
+            Collider2D[] nearbyColliders = Physics2D.OverlapCircleAll(
+                contact.point,
+                mergableDetectionRange * (transform.localScale.x / 2.5f) // Account for object scale
+            );
 
             foreach (var collider in nearbyColliders)
             {
@@ -122,7 +146,11 @@ public class Mergable : MonoBehaviour
 
         // Calculate the new radius and scale of the merged object
         float newRadius = Mathf.Sqrt(totalArea / Mathf.PI);
-        Vector3 newScale = new Vector3(newRadius * 2f, newRadius * 2f, 1f);
+        Vector3 newScale = new Vector3(
+            newRadius * mergeMultiplier,
+            newRadius * mergeMultiplier,
+            1f
+        );
 
         return new MergableCalculationResult(totalArea, centerOfMass, newScale);
     }
@@ -168,12 +196,17 @@ public class Mergable : MonoBehaviour
         {
             if (mergable != this)
             {
+                this.numOfTimesMerged += mergable.NumOfTimesMerged;
                 mergable.Hide();
             }
         }
 
         // Mark the merge process as complete
         isMerging = false;
+        largestObjectFinder.TrySetLargestObject();
+
+        // Set the number of times merged
+        SetNumOfTimesMerged();
     }
 
     public void Hide()
@@ -186,6 +219,23 @@ public class Mergable : MonoBehaviour
 
         // Reset the scale after merge animation
         transform.localScale = startingScale;
+
+        // Reset the number of times merged
+        SetNumOfTimesMerged(1);
+    }
+
+    private void SetNumOfTimesMerged()
+    {
+        SetNumOfTimesMerged(this.numOfTimesMerged);
+    }
+
+    private void SetNumOfTimesMerged(int numOfTimesMerged)
+    {
+        // Update the value
+        this.numOfTimesMerged = numOfTimesMerged;
+
+        // Update the UI
+        numOfTimesMergedText.text = numOfTimesMerged.ToString();
     }
 }
 
