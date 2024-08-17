@@ -2,6 +2,10 @@ name: Build Unity Project
 
 on:
     workflow_dispatch:
+        inputs:
+            build-name:
+                type: string
+                required: true
 
 jobs:
     build-unity-project:
@@ -28,12 +32,13 @@ jobs:
             - name: Cache
               uses: actions/checkout@v3
             - name: Build
-              uses: game-ci/unity-builder@v4
+              uses: game-ci/unity-builder@v4 # https://game.ci/docs/github/builder
               env:
                 UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
                 UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
                 UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
               with:
+                buildName: ${{ github.event.inputs.build-name }}-${{ matrix.platform }}
                 targetPlatform: ${{ matrix.platform }}
             - name: Upload Build to Artifact
               uses: actions/upload-artifact@v3
