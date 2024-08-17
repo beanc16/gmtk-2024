@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using TMPro;
 
@@ -72,8 +73,8 @@ public class Mergable : MonoBehaviour
 
     private bool CanMerge(Mergable? otherMergable)
     {
-        // The given mergable exists, isn't merging, and neither is this mergable
-        return (otherMergable != null && !otherMergable.isMerging && !this.isMerging);
+        // Allow merging if the other Mergable is not null, and either is not merging or is currently merging but hasn't finished
+        return (otherMergable != null && (!otherMergable.isMerging || !this.isMerging));
     }
 
     private List<Mergable> GetNearbyMergables(Collision2D collision, Mergable otherMergable)
@@ -86,7 +87,7 @@ public class Mergable : MonoBehaviour
         {
             Collider2D[] nearbyColliders = Physics2D.OverlapCircleAll(
                 contact.point,
-                mergableDetectionRange * (transform.localScale.x / 2.5f) // Account for object scale
+                mergableDetectionRange
             );
 
             foreach (var collider in nearbyColliders)
@@ -116,33 +117,30 @@ public class Mergable : MonoBehaviour
             mergable.isMerging = true;
         }
 
+        // Determine the largest mergable based on the area
+        Mergable largestMergable = mergables.OrderByDescending(m => m.Area).First();
+
         // Calculate the necessary values to animate the merge
-        MergableCalculationResult newMergableObjectVariables = CalculateNewMergableObjectVariables(mergables);
+        var newMergableObjectVariables = CalculateNewMergableObjectVariables(mergables);
 
         // Animate the merge
-        return AnimateMerge(
+        return largestMergable.AnimateMerge(
             mergables,
             newMergableObjectVariables.totalArea,
-            newMergableObjectVariables.centerOfMass,
             newMergableObjectVariables.newScale
         );
     }
 
     private MergableCalculationResult CalculateNewMergableObjectVariables(List<Mergable> mergables)
     {
-        // Calculate the combined area and center of mass for the merged object
+        // Calculate the combined area for the merged object
         float totalArea = 0f;
-        Vector3 centerOfMass = Vector3.zero;
 
         // Get the sum of the area and the center of mass
         foreach (var mergable in mergables)
         {
             totalArea += mergable.Area;
-            centerOfMass += mergable.transform.position;
         }
-
-        // Convert the center of mass from a sum to an average
-        centerOfMass /= mergables.Count;
 
         // Calculate the new radius and scale of the merged object
         float newRadius = Mathf.Sqrt(totalArea / Mathf.PI);
@@ -152,44 +150,74 @@ public class Mergable : MonoBehaviour
             1f
         );
 
-        return new MergableCalculationResult(totalArea, centerOfMass, newScale);
+        return new MergableCalculationResult(totalArea, newScale);
     }
 
-    private IEnumerator AnimateMerge(List<Mergable> mergables, float totalArea, Vector3 centerOfMass, Vector3 newScale)
+    private IEnumerator AnimateMerge(List<Mergable> mergables, float totalArea, Vector3 newScale)
     {
-        // Store initial scales and positions for interpolation
+        // Create initial values for interpolation
         float time = 0f;
+        float largestScale = 0f;
         Dictionary<Mergable, Vector3> initialScales = new Dictionary<Mergable, Vector3>();
         Dictionary<Mergable, Vector3> initialPositions = new Dictionary<Mergable, Vector3>();
+        Rigidbody2D largestMergableRb = GetComponent<Rigidbody2D>();
+        Vector3 startingVelocity = largestMergableRb.velocity;
 
         foreach (var mergable in mergables)
         {
             initialScales[mergable] = mergable.transform.localScale;
             initialPositions[mergable] = mergable.transform.position;
+
+            // Find the largest scale in the group
+            largestScale = Mathf.Max(largestScale, mergable.transform.localScale.x);
         }
 
-        // Animate the merging process
         while (time < 1f)
         {
             time += Time.deltaTime * mergeSpeed;
 
             foreach (var mergable in mergables)
             {
-                // Shrink each mergable's size to zero over time
-                mergable.transform.localScale = Vector3.Lerp(initialScales[mergable], Vector3.zero, time);
+                // Scale the largest mergable to the new scale without modifying position
+                if (mergable == this)
+                {
+                    transform.localScale = Vector3.Lerp(
+                        initialScales[mergable],
+                        newScale,
+                        time
+                    );
+                    continue;
+                }
 
-                // Move each mergable's position toward the center of mass over time
-                mergable.transform.position = Vector3.Lerp(initialPositions[mergable], centerOfMass, time);
+                // Proportionally scale the smaller objects more than the larger objects
+                float scaleFactor = mergable.transform.localScale.x / largestScale;
+
+                // Shrink each mergable's size to zero over time
+                mergable.transform.localScale = Vector3.Lerp(
+                    initialScales[mergable],
+                    Vector3.zero,
+                    time
+                );
+
+                // Move each mergable's position toward the largest Mergable's center of mass over time
+                mergable.transform.position = Vector3.Lerp(
+                    initialPositions[mergable],
+                    transform.position,
+                    time * scaleFactor
+                );
             }
-            transform.localScale = Vector3.Lerp(transform.localScale, newScale, time);
-            transform.position = Vector3.Lerp(transform.position, centerOfMass, time);
 
             yield return null;
         }
 
+        // After merging, retain the largest mergable's momentum
+        if (largestMergableRb != null)
+        {
+            largestMergableRb.velocity = startingVelocity;
+        }
+
         // Finalize the merge by setting the final scale and position
         transform.localScale = newScale;
-        transform.position = centerOfMass;
 
         // Hide all other mergables that were merged into this one
         foreach (var mergable in mergables)
@@ -242,13 +270,11 @@ public class Mergable : MonoBehaviour
 public class MergableCalculationResult
 {
     public float totalArea;
-    public Vector3 centerOfMass;
     public Vector3 newScale;
 
-    public MergableCalculationResult(float totalArea, Vector3 centerOfMass, Vector3 newScale)
+    public MergableCalculationResult(float totalArea, Vector3 newScale)
     {
         this.totalArea = totalArea;
-        this.centerOfMass = centerOfMass;
         this.newScale = newScale;
     }
 }
