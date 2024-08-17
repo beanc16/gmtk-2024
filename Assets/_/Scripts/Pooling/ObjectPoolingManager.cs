@@ -31,25 +31,30 @@ public class ObjectPoolingManager : MonoBehaviour
 
     public GameObject GetObject()
     {
-        GameObject? obj = GetObjectFromPool();
+        return GetObject(true);
+    }
+
+    public GameObject GetObject(bool shouldBeActive)
+    {
+        GameObject? obj = GetObjectFromPool(shouldBeActive);
 
         if (obj != null)
         {
-            obj.SetActive(true);
+            obj.SetActive(shouldBeActive);
             return obj;
         }
 
-        return InstantiateNewObject(true);
+        return InstantiateNewObject(shouldBeActive);
     }
 
-    private GameObject? GetObjectFromPool()
+    private GameObject? GetObjectFromPool(bool shouldBeActive)
     {
         foreach (GameObject obj in pool)
         {
             // Get a gameobject from the pool that's currently inactive
             if (!obj.activeInHierarchy)
             {
-                obj.SetActive(true);
+                obj.SetActive(shouldBeActive);
                 return obj;
             }
         }
