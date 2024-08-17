@@ -92,17 +92,21 @@ public class SoftBody2D : MonoBehaviour
         }
     }
 
-    public void MovePosition(Vector2 position)
+    public void MovePosition(Vector2 newPosition)
     {
+        // Calculate the offset from the current position to the new position
+        Vector2 offset = newPosition - (Vector2)this.transform.position;
+
+        // Update each point's position based on the calculated offset
+        centerPoint.transform.position += (Vector3)offset;
         foreach (GameObject point in points)
         {
-            Vector3 newPosition = point.transform.localPosition + new Vector3(
-                position.x,
-                position.y,
-                0
-            );
-            point.GetComponent<Rigidbody2D>().MovePosition(newPosition);
+            point.transform.position += (Vector3)offset;
         }
+
+        // Update the mesh and collider after moving the points
+        UpdateMesh();
+        UpdateColliderPath();
     }
 
     private void Awake()
@@ -182,16 +186,16 @@ public class SoftBody2D : MonoBehaviour
 
             jointToAdjacentPoint.autoConfigureDistance = false;
             jointToAdjacentPoint.distance = Radius * 0.8f; // Maintain close proximity
-            jointToAdjacentPoint.dampingRatio = 0.3f; // Moderate damping
-            jointToAdjacentPoint.frequency = 3f; // Higher frequency for stronger connection
+            jointToAdjacentPoint.dampingRatio = 0.2f; // Moderate damping
+            jointToAdjacentPoint.frequency = 2f; // Higher frequency for stronger connection
 
             // Connect to the central point using a FixedJoint2D
             SpringJoint2D jointToCenter = points[index].AddComponent<SpringJoint2D>();
             jointToCenter.connectedBody = centerPoint.GetComponent<Rigidbody2D>();
             jointToCenter.autoConfigureDistance = false;
             jointToCenter.distance = Radius * 0.9f; // Slightly less room to stretch
-            jointToCenter.dampingRatio = 0.5f; // Stronger damping to prevent collapse
-            jointToCenter.frequency = 4f; // Higher frequency for more stability
+            jointToCenter.dampingRatio = 0.6f; // Stronger damping to prevent collapse
+            jointToCenter.frequency = 2.5f; // Higher frequency for more stability
         }
 
         // Add diagonal spring joints for internal stability
@@ -280,5 +284,17 @@ public class SoftBody2D : MonoBehaviour
         }
 
         collider.SetPath(0, colliderPoints);
+    }
+
+    private void OnDrawGizmos()
+    {
+        // Draw the soft body center
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(centerOfMass, 0.1f);
+
+        // Draw the screen center
+        Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(Camera.main.ScreenToWorldPoint(screenCenter), 0.1f);
     }
 }

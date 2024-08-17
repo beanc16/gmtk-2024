@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using Beanc16.Common.General;
 
@@ -60,7 +61,7 @@ public class SoftBodySpawner : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (stopwatch.TimeSinceLapMarked >= SpawnFrequency)
         {
@@ -85,7 +86,18 @@ public class SoftBodySpawner : MonoBehaviour
 
         // Set the object's new position
         SoftBody2D softBody = obj.GetComponent<SoftBody2D>();
-        softBody.MovePosition(spawnPoint);
+        StartCoroutine(MoveAndActivateObject(softBody, spawnPoint, obj));
+    }
+
+    private IEnumerator MoveAndActivateObject(SoftBody2D softBody, Vector2 targetPosition, GameObject obj)
+    {
+        // Move the object to the desired position
+        softBody.MovePosition(targetPosition);
+
+        // Optionally wait for one frame to ensure the position is fully updated
+        yield return new WaitForEndOfFrame();
+
+        // Activate the object after it's fully moved to avoid jitter
         obj.SetActive(true);
     }
 
