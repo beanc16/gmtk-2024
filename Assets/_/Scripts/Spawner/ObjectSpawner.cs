@@ -20,7 +20,8 @@ public class ObjectSpawner : MonoBehaviour
 
     private float SpawnFrequency
     {
-        get => spawnFrequency / largestObjectScaleDivisor;
+        // Get the spawn frequency (no lower than 0.5)
+        get => Mathf.Max(spawnFrequency / largestObjectScaleDivisor, 0.5f);
     }
 
     [SerializeField]
