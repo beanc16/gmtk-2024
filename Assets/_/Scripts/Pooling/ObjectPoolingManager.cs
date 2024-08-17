@@ -31,15 +31,20 @@ public class ObjectPoolingManager : MonoBehaviour
 
     public GameObject GetObject()
     {
+        return GetObject(true);
+    }
+
+    public GameObject GetObject(bool shouldBeActive)
+    {
         GameObject? obj = GetObjectFromPool();
 
         if (obj != null)
         {
-            obj.SetActive(true);
+            obj.SetActive(shouldBeActive);
             return obj;
         }
 
-        return InstantiateNewObject(true);
+        return InstantiateNewObject(shouldBeActive);
     }
 
     private GameObject? GetObjectFromPool()

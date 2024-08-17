@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Beanc16.Common.General;
 
 /// <summary>
 /// Represents a soft body with points connected by joints
 /// to simulate a flexible (rather than rigid) shape.
 /// </summary>
 [RequireComponent(typeof (PolygonCollider2D))]
+[RequireComponent(typeof (Follow))]
 public class SoftBody2D : MonoBehaviour
 {
     private Mesh mesh;
@@ -90,13 +92,26 @@ public class SoftBody2D : MonoBehaviour
         }
     }
 
+    public void MovePosition(Vector2 position)
+    {
+        foreach (GameObject point in points)
+        {
+            Vector3 newPosition = point.transform.localPosition + new Vector3(
+                position.x,
+                position.y,
+                0
+            );
+            point.GetComponent<Rigidbody2D>().MovePosition(newPosition);
+        }
+    }
+
     private void Awake()
     {
         mesh = GetComponent<MeshFilter>().mesh;
         InitializeVertices();
         InitializeJoints();
+        InitializeFollowers();
         UpdateMesh();
-        InitializeSprite();
     }
 
     /// <summary>
@@ -197,22 +212,14 @@ public class SoftBody2D : MonoBehaviour
         }
     }
 
-    private void InitializeSprite()
+    private void InitializeFollowers()
     {
-        // Set material on meshRenderer
-        if (sprite != null)
+        // Set all child followers to follow the center point
+        Follow[] followers = GetComponentsInChildren<Follow>();
+
+        foreach (Follow follower in followers)
         {
-            MeshRenderer meshRenderer = gameObject.GetComponent<MeshRenderer>();
-            spriteMaterial = new Material(
-                Shader.Find("Sprites/Default")
-            ); // Shader for sprite-like appearance
-            spriteMaterial.color = Color.white; // Ensure white color with no additional tint
-            spriteMaterial.mainTexture = sprite.texture;
-            meshRenderer.material = spriteMaterial;
-        }
-        else
-        {
-            Debug.LogWarning("No sprite was found for soft body, so no texture will be rendered");
+            follower.ObjectToFollow = centerPoint;
         }
     }
 
