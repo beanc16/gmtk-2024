@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
+/// <summary>
+/// Represents a soft body with points connected by joints
+/// to simulate a flexible (rather than rigid) shape.
+/// </summary>
 [RequireComponent(typeof (PolygonCollider2D))]
 public class SoftBody2D : MonoBehaviour
 {
@@ -21,11 +25,18 @@ public class SoftBody2D : MonoBehaviour
 
     private GameObject centerPoint;
 
+    /// <summary>
+    /// Gets the radius of the soft body based on its scale.
+    /// </summary>
     public float Radius
     {
         get => this.transform.localScale.x / 2f;
     }
 
+    /// <summary>
+    /// Calculates the center of mass of the soft body based
+    /// on the mass and position of its points.
+    /// </summary>
     public Vector3 centerOfMass // (camelCase to match RigidBody2D's casing)
     {
         get
@@ -44,6 +55,9 @@ public class SoftBody2D : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sets the velocity for each point's Rigidbody2D.
+    /// </summary>
     public Vector2 velocity // (camelCase to match RigidBody2D's casing)
     {
         set
@@ -56,6 +70,11 @@ public class SoftBody2D : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Applies a force to each point's Rigidbody2D.
+    /// </summary>
+    /// <param name="force">The force to apply.</param>
+    /// <param name="mode">The mode of the force application.</param>
     public void AddForce(Vector2 force, ForceMode2D mode = ForceMode2D.Force)
     {
         // Apply force to each point's Rigidbody2D
@@ -70,12 +89,14 @@ public class SoftBody2D : MonoBehaviour
     {
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
-        // mesh = GetComponent<MeshFilter>().mesh;
         InitializeVertices();
         InitializeJoints();
         UpdateMesh();
     }
 
+    /// <summary>
+    /// Initializes the vertices and points of the soft body.
+    /// </summary>
     private void InitializeVertices()
     {
         vertices = new Vector3[numberOfPoints];
@@ -87,7 +108,6 @@ public class SoftBody2D : MonoBehaviour
             Quaternion.identity
         );
         Rigidbody2D centerPointRb = centerPoint.GetComponent<Rigidbody2D>();
-        // centerPointRb.isKinematic = true;  // Fix the center point in place
         centerPoint.transform.SetParent(this.transform);
 
         // Initialize points
@@ -118,6 +138,9 @@ public class SoftBody2D : MonoBehaviour
         UpdateColliderPath();
     }
 
+    /// <summary>
+    /// Initializes joints to connect the points and central point.
+    /// </summary>
     private void InitializeJoints()
     {
         // Connect points with hinge joints to form a closed loop
@@ -184,6 +207,10 @@ public class SoftBody2D : MonoBehaviour
         UpdateColliderPath();
     }
 
+    /// <summary>
+    /// Updates the mesh to reflect the current vertices and
+    /// creates triangles for rendering.
+    /// </summary>
     private void UpdateMesh()
     {
         mesh.Clear();
@@ -203,6 +230,10 @@ public class SoftBody2D : MonoBehaviour
         mesh.RecalculateNormals();
     }
 
+    /// <summary>
+    /// Updates the PolygonCollider2D path to match the
+    /// current positions of the points.
+    /// </summary>
     private void UpdateColliderPath()
     {
         // Update collider path to match the current positions of points

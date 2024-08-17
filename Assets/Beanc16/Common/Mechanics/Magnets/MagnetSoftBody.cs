@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Acts as a magnet for SoftBody2D objects
+/// </summary>
 public class MagnetSoftBody : MonoBehaviour
 {
     [SerializeField, Range(0, 500), Tooltip("How strongly the magnet pulls objects towards it")]
@@ -11,6 +14,11 @@ public class MagnetSoftBody : MonoBehaviour
 
     List<SoftBody2D> caughtSoftBodies = new List<SoftBody2D>();
 
+    /// <summary>
+    /// Calculates the center of mass for the given SoftBody2D.
+    /// </summary>
+    /// <param name="softBody">The SoftBody2D to calculate the center of mass for.</param>
+    /// <returns>A Vector3 representing the center of mass of the SoftBody2D.</returns>
     private Vector3 GetCenterOfMass(SoftBody2D softBody)
     {
         return new Vector3(softBody.centerOfMass.x, softBody.centerOfMass.y);
@@ -29,17 +37,32 @@ public class MagnetSoftBody : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Moves a SoftBody2D object relative to the magnet based on its polarity.
+    /// </summary>
+    /// <param name="softBody">The SoftBody2D object to move.</param>
     private void MoveSoftbodyTowardsMagnet(SoftBody2D softBody)
     {
-        // Get positional helpers
+        // Compute the direction to move the SoftBody2D towards the magnet
         Vector3 directionToMove = softBody.transform.position + this.GetCenterOfMass(softBody);
         Vector3 positionToMove = this.GetPositionToMoveSoftBody(softBody, directionToMove);
 
-        // Move softBody towards the magnet (static movement speed)
+        // Move softBody relative to the magnet (static movement speed)
         float scaler = force * Time.deltaTime;
         softBody.velocity = scaler * positionToMove;
     }
 
+    /// <summary>
+    /// Determine the position vector for moving a SoftBody2D
+    /// object based on its polarity.
+    /// </summary>
+    /// <param name="softBody">
+    /// The SoftBody2D object to determine the movement vector for.
+    /// </param>
+    /// <param name="directionToMove">
+    /// The direction in which to move the SoftBody2D.
+    /// </param>
+    /// <returns>A Vector3 representing the movement direction.</returns>
     private Vector3 GetPositionToMoveSoftBody(SoftBody2D softBody, Vector3 directionToMove)
     {
         if (this.SoftBodyIsOppositePolarity(softBody))
@@ -79,6 +102,12 @@ public class MagnetSoftBody : MonoBehaviour
 
 
 
+    /// <summary>
+    /// Checks if a given SoftBody2D object is currently caught
+    /// by the magnet.
+    /// </summary>
+    /// <param name="softBody">The SoftBody2D object to check.</param>
+    /// <returns>True if the SoftBody2D is caught, otherwise false.</returns>
     private bool SoftBodyIsCaught(SoftBody2D softBody)
     {
         if (softBody != null)
@@ -89,6 +118,11 @@ public class MagnetSoftBody : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Checks if a given SoftBody2D object has magnetic properties.
+    /// </summary>
+    /// <param name="softBody">The SoftBody2D object to check.</param>
+    /// <returns>True if the SoftBody2D is magnetic, otherwise false.</returns>
     private bool SoftBodyIsMagnetic(SoftBody2D softBody)
     {
         if (softBody != null && softBody.GetComponent<Magnetic>())
@@ -99,6 +133,12 @@ public class MagnetSoftBody : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Determine if a given SoftBody2D object has opposite
+    /// polarity of this magnet.
+    /// </summary>
+    /// <param name="softBody">The SoftBody2D object to check.</param>
+    /// <returns>True if the SoftBody2D has opposite polarity, otherwise false.</returns>
     private bool SoftBodyIsOppositePolarity(SoftBody2D softBody)
     {
         if (this.SoftBodyIsMagnetic(softBody))
@@ -118,6 +158,11 @@ public class MagnetSoftBody : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Determines if a given SoftBody2D object has the same polarity as the magnet.
+    /// </summary>
+    /// <param name="softBody">The SoftBody2D object to check.</param>
+    /// <returns>True if the SoftBody2D has the same polarity, otherwise false.</returns>
     private bool SoftBodyIsSamePolarity(SoftBody2D softBody)
     {
         if (this.SoftBodyIsMagnetic(softBody))
