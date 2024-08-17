@@ -20,6 +20,11 @@ public class SoftBody2D : MonoBehaviour
 
     [SerializeField]
     private List<GameObject> points = new List<GameObject>();
+
+    [SerializeField]
+    private Sprite sprite;
+    private Material spriteMaterial;
+
     [SerializeField]
     private GameObject pointPrefab;
 
@@ -87,11 +92,11 @@ public class SoftBody2D : MonoBehaviour
 
     private void Awake()
     {
-        mesh = new Mesh();
-        GetComponent<MeshFilter>().mesh = mesh;
+        mesh = GetComponent<MeshFilter>().mesh;
         InitializeVertices();
         InitializeJoints();
         UpdateMesh();
+        InitializeSprite();
     }
 
     /// <summary>
@@ -131,7 +136,7 @@ public class SoftBody2D : MonoBehaviour
             points.Add(obj);
 
             // Update vertices
-            vertices[index] = obj.transform.localPosition;
+            vertices[index] = obj.transform.localPosition - this.transform.position;
         }
 
         collider = GetComponent<PolygonCollider2D>();
@@ -189,6 +194,25 @@ public class SoftBody2D : MonoBehaviour
                 diagonalJoint.dampingRatio = 0.3f;
                 diagonalJoint.frequency = 2f;
             }
+        }
+    }
+
+    private void InitializeSprite()
+    {
+        // Set material on meshRenderer
+        if (sprite != null)
+        {
+            MeshRenderer meshRenderer = gameObject.GetComponent<MeshRenderer>();
+            spriteMaterial = new Material(
+                Shader.Find("Sprites/Default")
+            ); // Shader for sprite-like appearance
+            spriteMaterial.color = Color.white; // Ensure white color with no additional tint
+            spriteMaterial.mainTexture = sprite.texture;
+            meshRenderer.material = spriteMaterial;
+        }
+        else
+        {
+            Debug.LogWarning("No sprite was found for soft body, so no texture will be rendered");
         }
     }
 

@@ -223,8 +223,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ddb6847378361296a95e4515e7b5e92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfPoints: 10
+  numberOfPoints: 16
   points: []
+  sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   pointPrefab: {fileID: 6608043475294210918, guid: c92263bfd0c6bf4be81027d7649475fc, type: 3}
 --- !u!23 &454849183
 MeshRenderer:
@@ -245,8 +246,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 2e2743f12c5acc7b8ab9e3e013211aad, type: 2}
+  m_Materials: []
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -275,7 +275,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 454849180}
-  m_Mesh: {fileID: 0}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!114 &454849186
 MonoBehaviour:
   m_ObjectHideFlags: 0
