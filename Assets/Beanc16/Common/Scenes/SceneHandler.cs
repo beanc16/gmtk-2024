@@ -36,6 +36,11 @@ namespace Beanc16.Common.Scenes
         // Exit events
         public static BeforeExitGameEvent OnBeforeExitGame;
 
+        private static bool IsPaused
+        {
+            get => Time.timeScale == 0;
+        }
+
         private void Awake()
         {
             SceneHandler sceneHandler = GetComponent<SceneHandler>();
@@ -83,7 +88,30 @@ namespace Beanc16.Common.Scenes
             Scene curScene = SceneManager.GetActiveScene();
             LoadSceneAfterSeconds(curScene.name, seconds);
         }
-        
+
+        public static void TogglePauseScene()
+        {
+            PauseScene(!IsPaused);
+        }
+
+        public static void PauseScene(bool shouldPause = true)
+        {
+            if (shouldPause)
+            {
+                Time.timeScale = 0;
+            }
+
+            else
+            {
+                Time.timeScale = 1;
+            }
+        }
+
+        public static void UnpauseScene()
+        {
+            PauseScene(false);
+        }
+
         public static void ExitGame()
         {
             TryCallOnBeforeExitGameEvent();         // OnBeforeExitGame()
