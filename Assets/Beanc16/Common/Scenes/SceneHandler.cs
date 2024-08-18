@@ -38,7 +38,7 @@ namespace Beanc16.Common.Scenes
         // Load events (works for reloads / restarts too)
         public static BeforeSceneLoadedEvent OnBeforeSceneLoaded;
         
-        public static AfterSceneLoadedEvent OnAfterSceneLoaded;
+        public static AfterSceneLoadedEvent OnAfterSceneLoaded = new AfterSceneLoadedEvent();
         
         public static SceneLoadFailedEvent OnSceneLoadFailed;
 
