@@ -196,7 +196,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 6200000, guid: 806bd3ca0696dd9c39b1880f5f3e09b0, type: 2}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -254,6 +254,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   linearDragCoefficient: 0.4
   velocityMultiplier: 1
+  applyMass: 1
 --- !u!114 &444375079440270803
 MonoBehaviour:
   m_ObjectHideFlags: 0
