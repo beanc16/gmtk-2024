@@ -9,12 +9,12 @@ using UnityEngine;
 public class KinematicCollisionSimulator : MonoBehaviour
 {
     [SerializeField, Tooltip("List of game objects with colliders for collision simulation.")]
-    private List<GameObject> collisionObjects = new List<GameObject>();
+    protected List<GameObject> collisionObjects = new List<GameObject>();
 
     private Rigidbody2D rigidBody;
     private Collider2D collider;
 
-    private void Awake()
+    protected void Awake()
     {
         rigidBody = GetComponent<Rigidbody2D>();
         collider = GetComponent<Collider2D>();
@@ -66,7 +66,7 @@ public class KinematicCollisionSimulator : MonoBehaviour
         if (collisionNormal != Vector2.zero)
         {
             // Apply a small offset to prevent sticking
-            Vector2 offset = collisionNormal * 0.02f;
+            Vector2 offset = collisionNormal * 0.07f;
             transform.position += (Vector3)offset;
 
             // Reflect velocity
