@@ -14,7 +14,20 @@ public class KinematicDragSimulator : MonoBehaviour
     [SerializeField, Range(0f, 1f), Tooltip("How much to lower velocity by on each FixedUpdate.")]
     private float velocityMultiplier = 1f;
 
+    [SerializeField, Tooltip("Apply the object's scale as mass to the object's drag.")]
+    private bool applyMass = true;
+
     private Rigidbody2D rigidBody;
+
+    /// <summary>
+    /// An approximation of mass based on the scale of the object.
+    /// Assuming the mass is proportional to the volume (scale^3) of the object.
+    /// Adjust the multiplier if necessary to fit the expected mass range
+    /// </summary>
+    private float Mass
+    {
+        get => transform.localScale.x * transform.localScale.y * transform.localScale.z;
+    }
 
     private void Awake()
     {
@@ -37,9 +50,16 @@ public class KinematicDragSimulator : MonoBehaviour
         Vector2 velocity = rigidBody.velocity;
         if (velocity.magnitude > 0f)
         {
-            // Apply drag force proportional to the square of the velocity
-            Vector2 dragForce = -linearDragCoefficient * velocity.normalized * velocity.sqrMagnitude;
-            rigidBody.velocity += dragForce * Time.fixedDeltaTime;
+            // Determine the mass to use for drag calculations
+            float mass = applyMass ? Mass : 1f;
+
+            // Apply drag force proportional to the the mass and square of the velocity
+            Vector2 dragForce = -linearDragCoefficient
+                * mass
+                * velocity.normalized
+                * velocity.sqrMagnitude;
+
+            rigidBody.velocity += dragForce * Time.fixedDeltaTime / mass;
         }
 
         // Clamp velocity to prevent it from going negative

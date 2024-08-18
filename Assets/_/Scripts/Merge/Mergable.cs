@@ -21,6 +21,9 @@ public class Mergable : MonoBehaviour
 
     private Vector3 startingScale;
 
+    [SerializeField]
+    private MergeType mergeType = MergeType.ON_COLLISION;
+
     // For UI
     private int numOfTimesMerged = 1;
     public int NumOfTimesMerged { get => numOfTimesMerged; }
@@ -59,12 +62,36 @@ public class Mergable : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (mergeType != MergeType.ON_COLLISION)
+        {
+            return;
+        }
+
         Mergable otherMergable = collision.gameObject.GetComponent<Mergable>();
 
         if (CanMerge(otherMergable))
         {
             // Get all mergables in the collision
             List<Mergable> mergablesToMerge = GetNearbyMergables(collision, otherMergable);
+
+            // Start the merge process with all mergables involved
+            StartCoroutine(MergeMergables(mergablesToMerge));
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collider)
+    {
+        if (mergeType != MergeType.ON_TRIGGER)
+        {
+            return;
+        }
+
+        Mergable otherMergable = collider.gameObject.GetComponent<Mergable>();
+
+        if (CanMerge(otherMergable))
+        {
+            // Get all mergables in the trigger
+            List<Mergable> mergablesToMerge = GetNearbyMergables(collider, otherMergable);
 
             // Start the merge process with all mergables involved
             StartCoroutine(MergeMergables(mergablesToMerge));
@@ -103,6 +130,35 @@ public class Mergable : MonoBehaviour
                 {
                     mergablesToMerge.Add(nearbyMergable);
                 }
+            }
+        }
+
+        return mergablesToMerge;
+    }
+
+    private List<Mergable> GetNearbyMergables(Collider2D collider, Mergable otherMergable)
+    {
+        // Create a list of all mergables in the trigger
+        List<Mergable> mergablesToMerge = new List<Mergable> { this, otherMergable };
+
+        // Find all colliders within the detection range of the current collider
+        Collider2D[] nearbyColliders = Physics2D.OverlapCircleAll(
+            collider.transform.position,
+            mergableDetectionRange
+        );
+
+        foreach (var nearbyCollider in nearbyColliders)
+        {
+            Mergable nearbyMergable = nearbyCollider.GetComponent<Mergable>();
+
+            // Add the nearby mergable to the merge list if it isn't merging and isn't in the list yet
+            if (
+                nearbyMergable != null
+                && !nearbyMergable.isMerging
+                && !mergablesToMerge.Contains(nearbyMergable)
+            )
+            {
+                mergablesToMerge.Add(nearbyMergable);
             }
         }
 
@@ -277,4 +333,10 @@ public class MergableCalculationResult
         this.totalArea = totalArea;
         this.newScale = newScale;
     }
+}
+
+public enum MergeType
+{
+    ON_COLLISION,
+    ON_TRIGGER,
 }
