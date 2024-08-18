@@ -26,7 +26,7 @@ public class KinematicDragSimulator : MonoBehaviour
     /// </summary>
     private float Mass
     {
-        get => transform.localScale.x * transform.localScale.y * transform.localScale.z=;
+        get => transform.localScale.x * transform.localScale.y * transform.localScale.z;
     }
 
     private void Awake()
