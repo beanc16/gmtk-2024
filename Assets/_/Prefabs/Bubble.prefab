@@ -239,6 +239,7 @@ MonoBehaviour:
   mergeMultiplier: 2
   mergableDetectionRange: 1
   isMerging: 0
+  mergeType: 1
 --- !u!114 &3959470898270553386
 MonoBehaviour:
   m_ObjectHideFlags: 0
