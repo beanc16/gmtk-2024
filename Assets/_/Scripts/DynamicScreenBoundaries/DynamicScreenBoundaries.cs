@@ -16,6 +16,12 @@ public class DynamicScreenBoundaries : MonoBehaviour
     [SerializeField]
     private GameObject rightWall;
 
+    [HideInInspector]
+    public List<GameObject> Walls
+    {
+        get => new List<GameObject> { topWall, bottomWall, leftWall, rightWall };
+    }
+
     private Camera mainCamera;
 
     private void Start()
