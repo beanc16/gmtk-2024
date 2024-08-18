@@ -8,7 +8,8 @@ namespace Beanc16.Common.General
 {
     public class GameObjectToggleHandler : MonoBehaviour
     {
-        [SerializeField] private GameObject gameObjectToToggle;
+        [SerializeField]
+        private GameObject gameObjectToToggle;
 
 
 
