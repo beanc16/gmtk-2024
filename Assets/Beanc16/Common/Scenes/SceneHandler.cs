@@ -18,6 +18,15 @@ namespace Beanc16.Common.Scenes
     public class SceneLoadFailedEvent : UnityEvent { }
 
     [System.Serializable]
+    public class OnPauseEvent : UnityEvent { }
+
+    [System.Serializable]
+    public class OnPauseToggleEvent : UnityEvent { }
+
+    [System.Serializable]
+    public class OnUnpauseEvent : UnityEvent { }
+
+    [System.Serializable]
     public class BeforeExitGameEvent : UnityEvent { }
 
 
@@ -32,6 +41,11 @@ namespace Beanc16.Common.Scenes
         public static AfterSceneLoadedEvent OnAfterSceneLoaded;
         
         public static SceneLoadFailedEvent OnSceneLoadFailed;
+
+        // Pause events
+        public static OnPauseEvent OnPause;
+        public static OnPauseToggleEvent OnPauseToggle;
+        public static OnUnpauseEvent OnUnpause;
 
         // Exit events
         public static BeforeExitGameEvent OnBeforeExitGame;
@@ -99,12 +113,16 @@ namespace Beanc16.Common.Scenes
             if (shouldPause)
             {
                 Time.timeScale = 0;
+                OnPause?.Invoke();
             }
 
             else
             {
                 Time.timeScale = 1;
+                OnUnpause?.Invoke();
             }
+
+            OnPauseToggle?.Invoke();
         }
 
         public static void UnpauseScene()
@@ -154,34 +172,22 @@ namespace Beanc16.Common.Scenes
 
         private static void TryCallOnAfterSceneLoadedEvent()
         {
-            if (OnAfterSceneLoaded != null)
-            {
-                OnAfterSceneLoaded.Invoke();
-            }
+            OnAfterSceneLoaded?.Invoke();
         }
 
         private static void TryCallOnBeforeSceneLoadedEvent()
         {
-            if (OnBeforeSceneLoaded != null)
-            {
-                OnBeforeSceneLoaded.Invoke();
-            }
+            OnBeforeSceneLoaded?.Invoke();
         }
 
         private static void TryCallOnSceneLoadFailedEvent()
         {
-            if (OnSceneLoadFailed != null)
-            {
-                OnSceneLoadFailed.Invoke();
-            }
+            OnSceneLoadFailed?.Invoke();
         }
 
         private static void TryCallOnBeforeExitGameEvent()
         {
-            if (OnBeforeExitGame != null)
-            {
-                OnBeforeExitGame.Invoke();
-            }
+            OnBeforeExitGame?.Invoke();
         }
     }
 }
