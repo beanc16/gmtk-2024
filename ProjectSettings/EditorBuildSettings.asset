@@ -11,5 +11,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_/Scenes/MechanicsTesting.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/_/Scenes/Menus/SettingsMenu.unity
+    guid: 5be667566fc976ece91b4f454ce33727
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 860770d55d00cb93a8cc6823f2aca589, type: 2}
