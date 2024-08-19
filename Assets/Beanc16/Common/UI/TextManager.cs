@@ -10,6 +10,11 @@ namespace Beanc16.Common.UI
 
         private void Awake()
         {
+            InitializeComponents();
+        }
+
+        private void InitializeComponents()
+        {
             textComponent = GetComponent<TextMeshProUGUI>();
         }
 

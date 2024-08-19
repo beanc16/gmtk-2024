@@ -11,11 +11,6 @@ namespace Beanc16.Common.UI
         [SerializeField]
         private int score = 0;
 
-        private void Start()
-        {
-            SetScore(score);
-        }
-
         public void SetText(string text)
         {
             SetText(scorePrefix + text);
