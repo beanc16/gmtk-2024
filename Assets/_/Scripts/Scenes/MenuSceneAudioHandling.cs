@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MenuSceneAudioHandling : MonoBehaviour
+public class MenuSceneAudioHandling : SfxSceneAudioHandling
 {
     private void Start()
     {

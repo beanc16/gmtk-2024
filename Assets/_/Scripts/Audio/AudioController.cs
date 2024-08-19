@@ -64,7 +64,36 @@ public class AudioController : MonoBehaviour
     {
         if (instance != null && instance.sfxSources.ContainsKey(sfxName))
         {
+            if (instance.sfxSources[sfxName].isPlaying)
+            {
+                return;
+            }
+            
             instance.sfxSources[sfxName].Play();
+        }
+    }
+
+    public static void ToggleSfx(string sfxName)
+    {
+        if (instance != null && instance.sfxSources.ContainsKey(sfxName))
+        {
+            if (instance.sfxSources[sfxName].isPlaying)
+            {
+                instance.sfxSources[sfxName].Stop();
+            }
+            
+            else
+            {
+                instance.sfxSources[sfxName].Play();
+            }
+        }
+    }
+
+    public static void StopSfx(string sfxName)
+    {
+        if (instance != null && instance.sfxSources.ContainsKey(sfxName))
+        {
+            instance.sfxSources[sfxName].Stop();
         }
     }
 

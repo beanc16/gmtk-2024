@@ -390,7 +390,7 @@ GameObject:
   - component: {fileID: 355708313}
   - component: {fileID: 355708312}
   m_Layer: 5
-  m_Name: Credits Panel
+  m_Name: Button Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -885,6 +885,8 @@ GameObject:
   - component: {fileID: 773485236}
   - component: {fileID: 773485238}
   - component: {fileID: 773485237}
+  - component: {fileID: 773485240}
+  - component: {fileID: 773485239}
   m_Layer: 5
   m_Name: Music Toggle
   m_TagString: Untagged
@@ -999,6 +1001,69 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   m_IsOn: 1
+--- !u!114 &773485239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 773485235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c69c5387d6328519b1fbb5ccb3b5903, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnClickStart:
+    m_PersistentCalls:
+      m_Calls: []
+  OnClickStop:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1473997707}
+        m_TargetAssemblyTypeName: SfxSceneAudioHandling, Assembly-CSharp
+        m_MethodName: PlayButtonClickSfx
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &773485240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 773485235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f9c8175249782357aa720948a82794d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AcceptHoverEnterIfNoErrorIsThrown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnHoverEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1473997707}
+        m_TargetAssemblyTypeName: SfxSceneAudioHandling, Assembly-CSharp
+        m_MethodName: PlayButtonHoverSfx
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnHoverExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &785978782
 GameObject:
   m_ObjectHideFlags: 0
@@ -1458,6 +1523,8 @@ GameObject:
   - component: {fileID: 1193955906}
   - component: {fileID: 1193955905}
   - component: {fileID: 1193955904}
+  - component: {fileID: 1193955908}
+  - component: {fileID: 1193955907}
   m_Layer: 5
   m_Name: Home Button
   m_TagString: Untagged
@@ -1580,6 +1647,69 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1193955902}
   m_CullTransparentMesh: 1
+--- !u!114 &1193955907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1193955902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c69c5387d6328519b1fbb5ccb3b5903, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnClickStart:
+    m_PersistentCalls:
+      m_Calls: []
+  OnClickStop:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1473997707}
+        m_TargetAssemblyTypeName: SfxSceneAudioHandling, Assembly-CSharp
+        m_MethodName: PlayButtonClickSfx
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1193955908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1193955902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f9c8175249782357aa720948a82794d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AcceptHoverEnterIfNoErrorIsThrown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnHoverEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1473997707}
+        m_TargetAssemblyTypeName: SfxSceneAudioHandling, Assembly-CSharp
+        m_MethodName: PlayButtonHoverSfx
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnHoverExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1341983050
 GameObject:
   m_ObjectHideFlags: 0
@@ -2841,6 +2971,8 @@ GameObject:
   - component: {fileID: 2001940312}
   - component: {fileID: 2001940314}
   - component: {fileID: 2001940313}
+  - component: {fileID: 2001940316}
+  - component: {fileID: 2001940315}
   m_Layer: 5
   m_Name: SFX Toggle
   m_TagString: Untagged
@@ -2955,6 +3087,69 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   m_IsOn: 1
+--- !u!114 &2001940315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2001940311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c69c5387d6328519b1fbb5ccb3b5903, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnClickStart:
+    m_PersistentCalls:
+      m_Calls: []
+  OnClickStop:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1473997707}
+        m_TargetAssemblyTypeName: SfxSceneAudioHandling, Assembly-CSharp
+        m_MethodName: PlayButtonClickSfx
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2001940316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2001940311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f9c8175249782357aa720948a82794d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AcceptHoverEnterIfNoErrorIsThrown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnHoverEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1473997707}
+        m_TargetAssemblyTypeName: SfxSceneAudioHandling, Assembly-CSharp
+        m_MethodName: PlayButtonHoverSfx
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnHoverExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &2020484617
 GameObject:
   m_ObjectHideFlags: 0

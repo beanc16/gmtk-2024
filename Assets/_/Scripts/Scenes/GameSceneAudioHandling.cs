@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameSceneAudioHandling : MonoBehaviour
+public class GameSceneAudioHandling : SfxSceneAudioHandling
 {
     private void Start()
     {
@@ -13,5 +13,15 @@ public class GameSceneAudioHandling : MonoBehaviour
     {
         AudioController.StopMusic("Main Menu BGM");
         AudioController.PlayMusic("Game BGM");
+    }
+
+    public void ToggleWindBlowingSfx()
+    {
+        AudioController.ToggleSfx("Wind Blowing");
+    }
+
+    private void PlayBubbleMergeSfx()
+    {
+        AudioController.PlaySfx("Bubbles Merge");
     }
 }
