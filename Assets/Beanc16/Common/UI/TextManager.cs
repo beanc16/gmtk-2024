@@ -8,7 +8,7 @@ namespace Beanc16.Common.UI
     {
         protected TextMeshProUGUI textComponent;
 
-        protected void Start()
+        private void Awake()
         {
             textComponent = GetComponent<TextMeshProUGUI>();
         }

@@ -11,9 +11,8 @@ namespace Beanc16.Common.UI
         [SerializeField]
         private int score = 0;
 
-        protected void Start()
+        private void Start()
         {
-            base.Start();
             SetScore(score);
         }
 
