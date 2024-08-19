@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof (Camera))]
 public class CameraZoomOut : MonoBehaviour
@@ -13,6 +15,7 @@ public class CameraZoomOut : MonoBehaviour
 
     private Camera camera;
     private LargestObjectFinder largestObjectFinder;
+    public UnityEvent OnZoomingOut;
 
     private void Start()
     {
@@ -53,6 +56,7 @@ public class CameraZoomOut : MonoBehaviour
             if (newOrthographicSize > camera.orthographicSize)
             {
                 camera.orthographicSize = newOrthographicSize;
+                OnZoomingOut?.Invoke();
             }
         }
     }
