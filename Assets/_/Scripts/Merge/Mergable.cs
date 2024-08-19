@@ -38,6 +38,7 @@ public class Mergable : MonoBehaviour
     // Other objects
     private ObjectPoolingManager objectPoolingManager;
     private LargestObjectFinder largestObjectFinder;
+    private GameSceneAudioHandling gameSceneAudioHandling;
 
     // For events
     public OnMergeCompleteEvent OnMergeComplete = new OnMergeCompleteEvent();
@@ -65,6 +66,7 @@ public class Mergable : MonoBehaviour
         // Find necessary objects
         objectPoolingManager = FindObjectOfType<ObjectPoolingManager>();
         largestObjectFinder = FindObjectOfType<LargestObjectFinder>();
+        gameSceneAudioHandling = FindObjectOfType<GameSceneAudioHandling>();
         ScoreTextManager scoreTextManager = FindObjectOfType<ScoreTextManager>();
 
         // Set up score incrementing when a merge occurs
@@ -231,6 +233,9 @@ public class Mergable : MonoBehaviour
         Dictionary<Mergable, Vector3> initialPositions = new Dictionary<Mergable, Vector3>();
         Rigidbody2D largestMergableRb = GetComponent<Rigidbody2D>();
         Vector3 startingVelocity = largestMergableRb.velocity;
+
+        gameSceneAudioHandling.PlayBubbleMergeSfx();
+        yield return null;
 
         foreach (var mergable in mergables)
         {

@@ -20,7 +20,7 @@ public class GameSceneAudioHandling : SfxSceneAudioHandling
         AudioController.ToggleSfx("Wind Blowing");
     }
 
-    private void PlayBubbleMergeSfx()
+    public void PlayBubbleMergeSfx()
     {
         AudioController.PlaySfx("Bubbles Merge");
     }
