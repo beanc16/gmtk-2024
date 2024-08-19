@@ -30,11 +30,6 @@ public class Mergable : MonoBehaviour
     [SerializeField]
     private MergeType mergeType = MergeType.ON_COLLISION;
 
-    // For UI
-    private int numOfTimesMerged = 1;
-    public int NumOfTimesMerged { get => numOfTimesMerged; }
-    private TextMeshProUGUI numOfTimesMergedText;
-
     // Other objects
     private ObjectPoolingManager objectPoolingManager;
     private LargestObjectFinder largestObjectFinder;
@@ -55,14 +50,6 @@ public class Mergable : MonoBehaviour
 
     private void Start()
     {
-        // Set up canvas
-        Canvas canvas = GetComponentInChildren<Canvas>();
-        canvas.worldCamera = Camera.main;
-
-        // Set up UI
-        numOfTimesMergedText = this.GetComponentInChildren<TextMeshProUGUI>();
-        numOfTimesMergedText.text = numOfTimesMerged.ToString();
-
         // Find necessary objects
         objectPoolingManager = FindObjectOfType<ObjectPoolingManager>();
         largestObjectFinder = FindObjectOfType<LargestObjectFinder>();
@@ -298,7 +285,6 @@ public class Mergable : MonoBehaviour
         {
             if (mergable != this)
             {
-                this.numOfTimesMerged += mergable.NumOfTimesMerged;
                 mergable.Hide();
             }
         }
@@ -306,9 +292,6 @@ public class Mergable : MonoBehaviour
         // Mark the merge process as complete
         isMerging = false;
         largestObjectFinder.TrySetLargestObject();
-
-        // Set the number of times merged
-        SetNumOfTimesMerged();
 
         // Send merge complete event (don't include this mergable in the count to make it count number of merges rather than number of things merged)
         OnMergeComplete?.Invoke(mergables.Count - 1);
@@ -324,23 +307,6 @@ public class Mergable : MonoBehaviour
 
         // Reset the scale after merge animation
         transform.localScale = startingScale;
-
-        // Reset the number of times merged
-        SetNumOfTimesMerged(1);
-    }
-
-    private void SetNumOfTimesMerged()
-    {
-        SetNumOfTimesMerged(this.numOfTimesMerged);
-    }
-
-    private void SetNumOfTimesMerged(int numOfTimesMerged)
-    {
-        // Update the value
-        this.numOfTimesMerged = numOfTimesMerged;
-
-        // Update the UI
-        numOfTimesMergedText.text = numOfTimesMerged.ToString();
     }
 }
 
