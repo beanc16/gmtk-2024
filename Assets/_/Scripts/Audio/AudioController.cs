@@ -21,7 +21,7 @@ public class AudioController : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private bool initializeAudioVolumesOnStart = true;
 
-    private void Start()
+    private void Awake()
     {
         if (instance != null)
         {
