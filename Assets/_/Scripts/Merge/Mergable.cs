@@ -3,7 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using TMPro;
+using Beanc16.Common.UI;
+
+[System.Serializable]
+public class OnMergeCompleteEvent : UnityEvent<int> { }
 
 public class Mergable : MonoBehaviour
 {
@@ -33,6 +39,9 @@ public class Mergable : MonoBehaviour
     private ObjectPoolingManager objectPoolingManager;
     private LargestObjectFinder largestObjectFinder;
 
+    // For events
+    public OnMergeCompleteEvent OnMergeComplete = new OnMergeCompleteEvent();
+
     public float Area
     {
         get
@@ -56,6 +65,10 @@ public class Mergable : MonoBehaviour
         // Find necessary objects
         objectPoolingManager = FindObjectOfType<ObjectPoolingManager>();
         largestObjectFinder = FindObjectOfType<LargestObjectFinder>();
+        ScoreTextManager scoreTextManager = FindObjectOfType<ScoreTextManager>();
+
+        // Set up score incrementing when a merge occurs
+        OnMergeComplete.AddListener(scoreTextManager.IncrementScore);
 
         startingScale = transform.localScale;
     }
@@ -291,6 +304,9 @@ public class Mergable : MonoBehaviour
 
         // Set the number of times merged
         SetNumOfTimesMerged();
+
+        // Send merge complete event (don't include this mergable in the count to make it count number of merges rather than number of things merged)
+        OnMergeComplete?.Invoke(mergables.Count - 1);
     }
 
     public void Hide()
