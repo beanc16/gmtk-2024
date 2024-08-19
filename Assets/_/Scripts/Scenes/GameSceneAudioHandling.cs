@@ -15,9 +15,14 @@ public class GameSceneAudioHandling : SfxSceneAudioHandling
         AudioController.PlayMusic("Game BGM");
     }
 
-    public void ToggleWindBlowingSfx()
+    public void PlayWindBlowingSfx()
     {
-        AudioController.ToggleSfx("Wind Blowing");
+        AudioController.PlaySfx("Wind Blowing", true);
+    }
+
+    public void StopWindBlowingSfx()
+    {
+        AudioController.StopSfx("Wind Blowing");
     }
 
     public void PlayBubbleMergeSfx()

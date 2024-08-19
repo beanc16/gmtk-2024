@@ -175,7 +175,7 @@ public class AudioController : MonoBehaviour
     public static void MuteMusic()
     {
         instance.musicVolume = 0;
-        AudioSettings.SetMusicMuted(true);
+        // AudioSettings.SetMusicMuted(true);
 
         UpdateMixer("MusicVolume", instance.musicVolume);
     }
@@ -183,7 +183,7 @@ public class AudioController : MonoBehaviour
     public static void MuteSfx()
     {
         instance.sfxVolume = 0;
-        AudioSettings.SetSfxMuted(true);
+        // AudioSettings.SetSfxMuted(true);
 
         UpdateMixer("SfxVolume", instance.sfxVolume);
     }
