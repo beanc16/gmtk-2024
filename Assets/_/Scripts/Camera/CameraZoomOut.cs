@@ -5,10 +5,10 @@ using UnityEngine;
 [RequireComponent(typeof (Camera))]
 public class CameraZoomOut : MonoBehaviour
 {
-    [SerializeField, Range(0, 10), Tooltip("The speed at which the camera zooms out")]
+    [SerializeField, Range(0f, 10f), Tooltip("The speed at which the camera zooms out")]
     private float zoomSpeed = 2f;
 
-    [SerializeField, Range(1, 10), Tooltip("Multipler to control camera zoom based on the larget object's scale")]
+    [SerializeField, Range(0f, 10f), Tooltip("Multipler to control camera zoom based on the larget object's scale")]
     private float zoomScaler = 2f;
 
     private Camera camera;
