@@ -13,12 +13,12 @@ namespace Beanc16.Common.UI
 
         public void SetText(string text)
         {
-            base.SetText(scorePrefix + text);
+            base.SetText($"{scorePrefix}{text}");
         }
 
         public void SetText(int number)
         {
-            base.SetText(scorePrefix + number.ToString());
+            base.SetText($"{scorePrefix}{number}");
         }
 
         public void SetScore(int number)
