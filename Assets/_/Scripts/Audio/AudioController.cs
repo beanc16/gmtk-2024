@@ -4,10 +4,6 @@ using UnityEngine.Audio;
 
 public class AudioController : MonoBehaviour
 {
-    private const string GLOBAL_PREFS_KEY = "globalVolume";
-    private const string MUSIC_PREFS_KEY = "MusicVolume";
-    private const string SFX_PREFS_KEY = "SfxVolume";
-
     [SerializeField] private AudioMixer audioMixer;
     [SerializeField] private GameObject sfxParent;
     [SerializeField] private GameObject musicParent;
@@ -34,9 +30,9 @@ public class AudioController : MonoBehaviour
         }
         instance = this;
 
-        this.globalVolume = PlayerPrefs.GetFloat(GLOBAL_PREFS_KEY);
-        this.musicVolume = PlayerPrefs.GetFloat(MUSIC_PREFS_KEY);
-        this.sfxVolume = PlayerPrefs.GetFloat(SFX_PREFS_KEY);
+        this.globalVolume = AudioSettings.GetSavedGlobalVolume();
+        this.musicVolume = AudioSettings.GetSavedMusicVolume();
+        this.sfxVolume = AudioSettings.GetSavedSfxVolume();
 
         // Initialize all SFX
         var allSfx = this.sfxParent.GetComponentsInChildren<AudioSource>();
@@ -114,8 +110,7 @@ public class AudioController : MonoBehaviour
     public static void UpdateGlobalVolume(float newValue)
     {
         instance.globalVolume = newValue;
-
-        PlayerPrefs.SetFloat(GLOBAL_PREFS_KEY, instance.globalVolume);
+        AudioSettings.SetGlobalVolume(instance.globalVolume);
 
         UpdateMixer("GlobalVolume", instance.globalVolume);
     }
@@ -123,7 +118,7 @@ public class AudioController : MonoBehaviour
     public static void UpdateMusicVolume(float newValue)
     {
         instance.musicVolume = newValue;
-        PlayerPrefs.SetFloat(MUSIC_PREFS_KEY, instance.musicVolume);
+        AudioSettings.SetMusicVolume(instance.musicVolume);
 
         UpdateMixer("MusicVolume", instance.musicVolume);
     }
@@ -131,7 +126,7 @@ public class AudioController : MonoBehaviour
     public static void UpdateSfxVolume(float newValue)
     {
         instance.sfxVolume = newValue;
-        PlayerPrefs.SetFloat(SFX_PREFS_KEY, instance.sfxVolume);
+        AudioSettings.SetSfxVolume(instance.musicVolume);
 
         UpdateMixer("SfxVolume", instance.sfxVolume);
     }

@@ -23,12 +23,9 @@ public class AudioInitializer : MonoBehaviour
         float musicVolume = AudioSettings.GetSavedMusicVolume();
         bool musicIsMuted = AudioSettings.SavedMusicIsMuted();
 
-        if (PlayerPrefs.HasKey("musicIsMuted"))
+        if (musicIsMuted)
         {
-            if (musicIsMuted)
-            {
-                AudioController.UpdateMusicVolume(0);
-            }
+            AudioController.UpdateMusicVolume(0);
         }
 
         else if (musicVolume != null)

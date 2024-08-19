@@ -5,6 +5,12 @@ using UnityEngine.UI;
 
 public class AudioSettings : MonoBehaviour
 {
+    // The 'key' that PlayerPrefs should save the player's global volume settings at
+    private static string globalVolumeKey = "globalVolumne";
+
+    // The 'key' that PlayerPrefs should save the player's global volume settings at
+    private static string globalMutedKey = "globalIsMuted";
+
     // The 'key' that PlayerPrefs should save the player's music volume settings at
     private static string musicVolumeKey = "musicVolume";
 
@@ -96,6 +102,23 @@ public class AudioSettings : MonoBehaviour
      */
     
     // Music
+    public void UpdateGlobalVolume(float value)
+    {
+        UpdateGlobalVolume(value, true);
+    }
+
+    public void UpdateGlobalVolume(float value, bool shouldSave)
+    {
+        AudioController.UpdateGlobalVolume(value);
+        musicMuteToggle.isOn = false;
+
+        if (shouldSave)
+        {
+            SetGlobalVolume(value);
+        }
+    }
+    
+    // Music
     public void UpdateMusicVolume(float value)
     {
         UpdateMusicVolume(value, true);
@@ -166,6 +189,33 @@ public class AudioSettings : MonoBehaviour
      * SETTERS
      */
     
+    public static void SetGlobalVolume(float value, string? placeholder = "") // TODO: Rewrite this later
+    {
+        PlayerPrefs.SetFloat(globalVolumeKey, value);
+    }
+
+    public void SetGlobalVolume(float value)
+    {
+        PlayerPrefs.SetFloat(globalVolumeKey, value);
+    }
+
+    public void SetGlobalMuted(bool isMuted)
+    {
+        int globalIsMuted = 0;
+
+        if (isMuted)
+        {
+            globalIsMuted = 1;
+        }
+
+        PlayerPrefs.SetInt(globalMutedKey, globalIsMuted);
+    }
+
+    public static void SetMusicVolume(float value, string? placeholder = "") // TODO: Rewrite this later
+    {
+        PlayerPrefs.SetFloat(musicVolumeKey, value);
+    }
+
     public void SetMusicVolume(float value)
     {
         PlayerPrefs.SetFloat(musicVolumeKey, value);
@@ -181,6 +231,11 @@ public class AudioSettings : MonoBehaviour
         }
 
         PlayerPrefs.SetInt(musicMutedKey, musicIsMuted);
+    }
+
+    public static void SetSfxVolume(float value, string? placeholder = "") // TODO: Rewrite this later
+    {
+        PlayerPrefs.SetFloat(sfxVolumeKey, value);
     }
 
     public void SetSfxVolume(float value)
@@ -211,6 +266,11 @@ public class AudioSettings : MonoBehaviour
      * GETTERS
      */
     
+    public static float GetSavedGlobalVolume()
+    {
+        return PlayerPrefs.GetFloat(globalVolumeKey, 1f);
+    }
+    
     public static float GetSavedMusicVolume()
     {
         return PlayerPrefs.GetFloat(musicVolumeKey, 1f);
@@ -226,6 +286,18 @@ public class AudioSettings : MonoBehaviour
     /*
      * BOOLEANS
      */
+    
+    public static bool SavedGlobalIsMuted()
+    {
+        int isMuted = PlayerPrefs.GetInt(globalMutedKey);
+
+        if (isMuted == null)
+        {
+            return false;
+        }
+
+        return (isMuted == 1);
+    }
     
     public static bool SavedMusicIsMuted()
     {
