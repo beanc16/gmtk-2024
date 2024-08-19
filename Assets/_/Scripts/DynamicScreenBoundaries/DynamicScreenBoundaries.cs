@@ -43,30 +43,30 @@ public class DynamicScreenBoundaries : MonoBehaviour
         float screenWidth = screenHeight * mainCamera.aspect;
 
         // Adjust the scale and position of each wall
-        topWall.transform.localScale = new Vector3(screenWidth, 1f, 1f);
+        topWall.transform.localScale = new Vector3(screenWidth * 3, screenWidth, 1f);
         topWall.transform.position = new Vector3(
             0f,
-            mainCamera.orthographicSize + 0.5f,
+            mainCamera.orthographicSize + (screenWidth / 2),
             0f
         );
 
-        bottomWall.transform.localScale = new Vector3(screenWidth, 1f, 1f);
+        bottomWall.transform.localScale = new Vector3(screenWidth * 3, screenWidth, 1f);
         bottomWall.transform.position = new Vector3(
             0f,
-            -mainCamera.orthographicSize - 0.5f,
+            -mainCamera.orthographicSize - (screenWidth / 2),
             0f
         );
 
-        leftWall.transform.localScale = new Vector3(1f, screenHeight, 1f);
+        leftWall.transform.localScale = new Vector3(screenWidth, screenHeight, 1f);
         leftWall.transform.position = new Vector3(
-            -mainCamera.orthographicSize * mainCamera.aspect - 0.5f,
+            -mainCamera.orthographicSize * mainCamera.aspect - (screenWidth / 2),
             0f,
             0f
         );
 
-        rightWall.transform.localScale = new Vector3(1f, screenHeight, 1f);
+        rightWall.transform.localScale = new Vector3(screenWidth, screenHeight, 1f);
         rightWall.transform.position = new Vector3(
-            mainCamera.orthographicSize * mainCamera.aspect + 0.5f,
+            mainCamera.orthographicSize * mainCamera.aspect + (screenWidth / 2),
             0f,
             0f
         );

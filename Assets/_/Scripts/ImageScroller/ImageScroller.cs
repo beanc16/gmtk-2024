@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 public class ImageScroller : MonoBehaviour
 {
@@ -10,14 +12,20 @@ public class ImageScroller : MonoBehaviour
     [SerializeField, Tooltip("The speed of scrolling in pixels per second")]
     private float scrollSpeed = 100f;
 
-    [SerializeField]
-    private bool shouldAutomaticallyScroll = true;
+    [SerializeField, Range(0f, 1f), Tooltip("Percentage of screen height the largest object should occupy")]
+    private float targetHeightPercentage = 0.5f;
+
+    private Vector2 targetPosition;
 
     private RectTransform imageRectTransform;
     private RectTransform canvasRectTransform;
-
     private float imageHeight;
     private float canvasHeight;
+    private LargestObjectFinder largestObjectFinder;
+
+    public bool StopMoving { get; set; } = false;
+
+    public UnityEvent OnReachedEndOfCanvas;
 
     private void Start()
     {
@@ -25,51 +33,83 @@ public class ImageScroller : MonoBehaviour
         imageRectTransform = image.GetComponent<RectTransform>();
         canvasRectTransform = image.canvas.GetComponent<RectTransform>();
 
-        // Ensure the RawImage is aligned to the bottom of the canvas initially
-        AlignImageToBottomOfScreen();
+        // Initialize the LargestObjectFinder
+        largestObjectFinder = FindObjectOfType<LargestObjectFinder>();
 
         // Get the height of the image and canvas
         imageHeight = imageRectTransform.rect.height;
         canvasHeight = canvasRectTransform.rect.height;
 
-        // Start the scrolling coroutine
-        if (shouldAutomaticallyScroll)
-        {
-            StartCoroutine(AutomaticallyScrollImage());
-        }
+        // Ensure the RawImage is aligned to the bottom of the canvas initially
+        AlignImageToBottomOfScreen();
     }
 
-    private IEnumerator AutomaticallyScrollImage()
+    private void Update()
     {
-        // Set the initial position of the image to the bottom of the canvas
-        // (this assumes a pivot position aligned to the bottom of the screen)
-        AlignImageToBottomOfScreen();
-
-        while (true)
+        if (StopMoving)
         {
+            return;
+        }
+
+        Debug.Log($"targetPosition: ${targetPosition}");
+        imageRectTransform.anchoredPosition = Vector2.MoveTowards(
+            imageRectTransform.anchoredPosition,
+            targetPosition,
+            -(Time.deltaTime * scrollSpeed)
+        );
+
+        if (IsAtEndOfCanvas())
+        {
+            AlignImageToBottomOfScreen();
             ScrollImage();
-            yield return null;
         }
     }
 
     public void ScrollImage()
     {
-        // Scroll the image
-        float scrollAmount = scrollSpeed * Time.deltaTime;
-        imageRectTransform.anchoredPosition += new Vector2(0f, scrollAmount);
-
-        // If the image has moved beyond the edge of the canvas, reset its position
-        if (IsAtEndOfCanvas())
+        if (StopMoving)
         {
-            AlignImageToBottomOfScreen();
+            return;
+        }
+
+        if (largestObjectFinder == null)
+        {
+            Debug.LogWarning("LargestObjectFinder not found!");
+            return;
+        }
+
+        GameObject largestObject = largestObjectFinder.GetLargestObject();
+
+        if (largestObject != null)
+        {
+            // Calculate the object's world space size
+            Vector3 objectSize = largestObject.GetComponent<Renderer>().bounds.size;
+            float objectHeight = objectSize.y;
+
+            // Calculate the required scroll speed based on the object height
+            float targetWorldHeight = targetHeightPercentage * canvasHeight;
+            float scrollFactor = objectHeight / targetWorldHeight;
+            // TODO: Update 100000f later, that's just for testing
+            float adjustedScrollSpeed = scrollSpeed * 1000f * scrollFactor;
+
+            // Scroll the image
+            float scrollAmount = adjustedScrollSpeed * Time.deltaTime;
+            targetPosition += new Vector2(0f, scrollAmount);
+
+            // If the image has moved beyond the edge of the canvas, reset its position
+            if (IsAtEndOfCanvas())
+            {
+                OnReachedEndOfCanvas?.Invoke();
+                AlignImageToBottomOfScreen();
+            }
         }
     }
 
     private void AlignImageToBottomOfScreen()
     {
         // Set the initial position of the image to the bottom of the canvas
-        // (this assumes a pivot position aligned to the bottom of the screen)
         imageRectTransform.anchoredPosition = new Vector2(0f, 0f);
+        targetPosition = new Vector2(0f, 0f);
     }
 
     private bool IsAtEndOfCanvas()

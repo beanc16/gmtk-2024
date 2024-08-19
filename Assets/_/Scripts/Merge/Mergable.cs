@@ -8,9 +8,6 @@ using UnityEngine.EventSystems;
 using TMPro;
 using Beanc16.Common.UI;
 
-[System.Serializable]
-public class OnMergeCompleteEvent : UnityEvent<int> { }
-
 public class Mergable : MonoBehaviour
 {
     [SerializeField, Range(0f, 25f), Tooltip("How quickly the objects should merge")]
@@ -36,7 +33,8 @@ public class Mergable : MonoBehaviour
     private GameSceneAudioHandling gameSceneAudioHandling;
 
     // For events
-    public OnMergeCompleteEvent OnMergeComplete = new OnMergeCompleteEvent();
+    public UnityEvent OnMergeComplete;
+    public UnityEvent<int> OnMergeCompleteWithData;
 
     public float Area
     {
@@ -54,11 +52,16 @@ public class Mergable : MonoBehaviour
         objectPoolingManager = FindObjectOfType<ObjectPoolingManager>();
         largestObjectFinder = FindObjectOfType<LargestObjectFinder>();
         gameSceneAudioHandling = FindObjectOfType<GameSceneAudioHandling>();
-        ScoreTextManager scoreTextManager = FindObjectOfType<ScoreTextManager>();
 
         // Set up score incrementing when a merge occurs
-        OnMergeComplete.AddListener(scoreTextManager.IncrementScore);
+        ScoreTextManager scoreTextManager = FindObjectOfType<ScoreTextManager>();
+        OnMergeCompleteWithData.AddListener(scoreTextManager.IncrementScore);
 
+        // Set up background image to scroll when a merge occurs
+        ImageScroller imageScroller = FindObjectOfType<ImageScroller>();
+        OnMergeComplete.AddListener(imageScroller.ScrollImage);
+
+        // Set initial scale
         startingScale = transform.localScale;
     }
 
@@ -294,7 +297,8 @@ public class Mergable : MonoBehaviour
         largestObjectFinder.TrySetLargestObject();
 
         // Send merge complete event (don't include this mergable in the count to make it count number of merges rather than number of things merged)
-        OnMergeComplete?.Invoke(mergables.Count - 1);
+        OnMergeCompleteWithData?.Invoke(mergables.Count - 1);
+        OnMergeComplete.Invoke();
     }
 
     public void Hide()
