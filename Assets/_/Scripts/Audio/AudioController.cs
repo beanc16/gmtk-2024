@@ -60,11 +60,11 @@ public class AudioController : MonoBehaviour
         }
     }
 
-    public static void PlaySfx(string sfxName)
+    public static void PlaySfx(string sfxName, bool shouldntPlayIfPlaying = false)
     {
         if (instance != null && instance.sfxSources.ContainsKey(sfxName))
         {
-            if (instance.sfxSources[sfxName].isPlaying)
+            if (shouldntPlayIfPlaying && instance.sfxSources[sfxName].isPlaying)
             {
                 return;
             }
@@ -174,11 +174,17 @@ public class AudioController : MonoBehaviour
 
     public static void MuteMusic()
     {
-        UpdateMusicVolume(0);
+        instance.musicVolume = 0;
+        AudioSettings.SetMusicMuted(true);
+
+        UpdateMixer("MusicVolume", instance.musicVolume);
     }
 
     public static void MuteSfx()
     {
-        UpdateSfxVolume(0);
+        instance.sfxVolume = 0;
+        AudioSettings.SetSfxMuted(true);
+
+        UpdateMixer("SfxVolume", instance.sfxVolume);
     }
 }
