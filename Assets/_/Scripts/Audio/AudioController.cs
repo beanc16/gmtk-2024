@@ -69,7 +69,8 @@ public class AudioController : MonoBehaviour
                 return;
             }
             
-            instance.sfxSources[sfxName].Play();
+            // Use PlayOneShot for SFX to prevent clipping if the same sound plays at the same time
+            instance.sfxSources[sfxName].PlayOneShot(instance.sfxSources[sfxName].clip);
         }
     }
 
