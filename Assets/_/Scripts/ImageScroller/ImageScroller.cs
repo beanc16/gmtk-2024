@@ -22,10 +22,9 @@ public class ImageScroller : MonoBehaviour
     private float imageHeight;
     private float canvasHeight;
     private LargestObjectFinder largestObjectFinder;
+    private WinDetection winDetection;
 
     public bool StopMoving { get; set; } = false;
-
-    public UnityEvent OnReachedEndOfCanvas;
 
     private void Start()
     {
@@ -35,6 +34,7 @@ public class ImageScroller : MonoBehaviour
 
         // Initialize the LargestObjectFinder
         largestObjectFinder = FindObjectOfType<LargestObjectFinder>();
+        winDetection = FindObjectOfType<WinDetection>();
 
         // Get the height of the image and canvas
         imageHeight = imageRectTransform.rect.height;
@@ -42,6 +42,9 @@ public class ImageScroller : MonoBehaviour
 
         // Ensure the RawImage is aligned to the bottom of the canvas initially
         AlignImageToBottomOfScreen();
+
+        // Reset anything from the scene being won
+        StopMoving = false;
     }
 
     private void Update()
@@ -60,8 +63,12 @@ public class ImageScroller : MonoBehaviour
 
         if (IsAtEndOfCanvas())
         {
-            AlignImageToBottomOfScreen();
-            ScrollImage();
+            StopMoving = true;
+            winDetection.RunWin();
+
+            // TODO: This is if the image scrolled infinitely. It doesn't here, so do win detection instead.
+            // AlignImageToBottomOfScreen();
+            // ScrollImage();
         }
     }
 
@@ -99,8 +106,10 @@ public class ImageScroller : MonoBehaviour
             // If the image has moved beyond the edge of the canvas, reset its position
             if (IsAtEndOfCanvas())
             {
-                OnReachedEndOfCanvas?.Invoke();
-                AlignImageToBottomOfScreen();
+                StopMoving = true;
+                winDetection.RunWin();
+                // TODO: This is if the image scrolled infinitely. It doesn't here, so do win detection instead.
+                // AlignImageToBottomOfScreen();
             }
         }
     }
