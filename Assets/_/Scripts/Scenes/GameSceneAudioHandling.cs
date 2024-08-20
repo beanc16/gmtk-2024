@@ -27,6 +27,6 @@ public class GameSceneAudioHandling : SfxSceneAudioHandling
 
     public void PlayBubbleMergeSfx()
     {
-        AudioController.PlaySfx("Bubbles Merge");
+        AudioController.PlaySfx("Bubbles Merge", true);
     }
 }
