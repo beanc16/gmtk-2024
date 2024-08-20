@@ -12,6 +12,7 @@ public class KinematicCollisionSimulator : MonoBehaviour
 {
     [SerializeField, Tooltip("List of game objects with colliders for collision simulation.")]
     protected List<GameObject> collisionObjects = new List<GameObject>();
+    private bool isSoundEnabled = false;
 
     private Rigidbody2D rigidBody;
     private Collider2D collider;
@@ -49,11 +50,16 @@ public class KinematicCollisionSimulator : MonoBehaviour
                         HandleCollision(otherCollider);
 
                         // TODO: This is just for this game, this should be a UnityEvent in the future.
-                        AudioController.PlaySfx("Bubble Bounce");
+                        if (isSoundEnabled) // This tried to play when the page loads for some reason, this is a hack to get around that audio bug.
+                        {
+                            AudioController.PlaySfx("Bubble Bounce");
+                        }
                     }
                 }
             }
         }
+
+        isSoundEnabled = true;
     }
 
     private bool IsColliding(Collider2D otherCollider)
