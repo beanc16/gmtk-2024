@@ -2428,10 +2428,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1727877752, guid: 7f8ba0dc8c9a8cfe39c6da0b89aa210c, type: 3}
-      propertyPath: m_Volume
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5535022544673014852, guid: 7f8ba0dc8c9a8cfe39c6da0b89aa210c, type: 3}
       propertyPath: m_Name
       value: GlobalAudioController
