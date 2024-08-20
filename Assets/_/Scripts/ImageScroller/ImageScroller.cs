@@ -15,6 +15,12 @@ public class ImageScroller : MonoBehaviour
     [SerializeField, Range(0f, 1f), Tooltip("Percentage of screen height the largest object should occupy")]
     private float targetHeightPercentage = 0.5f;
 
+    [SerializeField]
+    private int numOfDesiredMerges = 200;
+
+    [SerializeField]
+    private bool includeDebugLogs = false;
+
     private Vector2 targetPosition;
 
     private RectTransform imageRectTransform;
@@ -54,7 +60,8 @@ public class ImageScroller : MonoBehaviour
             return;
         }
 
-        Debug.Log($"targetPosition: ${targetPosition}");
+        // TODO: Maybe remove these debug logs later
+        if (includeDebugLogs) Debug.Log($"targetPosition: ${targetPosition}");
         imageRectTransform.anchoredPosition = Vector2.MoveTowards(
             imageRectTransform.anchoredPosition,
             targetPosition,
@@ -97,11 +104,13 @@ public class ImageScroller : MonoBehaviour
             float targetWorldHeight = targetHeightPercentage * canvasHeight;
             float scrollFactor = objectHeight / targetWorldHeight;
             // TODO: Update 100000f later, that's just for testing
-            float adjustedScrollSpeed = scrollSpeed * 1000f * scrollFactor;
+            float adjustedScrollSpeed = scrollSpeed * 5000f * scrollFactor;
 
             // Scroll the image
             float scrollAmount = adjustedScrollSpeed * Time.deltaTime;
-            targetPosition += new Vector2(0f, scrollAmount);
+            // targetPosition += new Vector2(0f, scrollAmount); // TODO: If we wanted it dynamic
+            // targetPosition += new Vector2(0f, -65f); // -65 = 137 merges (8880/65 = 136.6)
+            targetPosition += new Vector2(0f, -((imageHeight - canvasHeight) / numOfDesiredMerges));
 
             // If the image has moved beyond the edge of the canvas, reset its position
             if (IsAtEndOfCanvas())

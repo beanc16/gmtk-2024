@@ -4672,8 +4672,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 1686496650}
-  scrollSpeed: -15
+  scrollSpeed: -50
   targetHeightPercentage: 0.48
+  numOfDesiredMerges: 250
 --- !u!1 &1643825899
 GameObject:
   m_ObjectHideFlags: 0

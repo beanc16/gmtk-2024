@@ -85,7 +85,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 3286163911610860551, guid: dba693b3ea5770200a683f1225d53a0c, type: 3}
+  m_Sprite: {fileID: 3286163911610860551, guid: a2ee2d839653c04008598c2879865251, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -164,6 +164,9 @@ MonoBehaviour:
   isMerging: 0
   mergeType: 1
   OnMergeComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMergeCompleteWithData:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &3959470898270553386
