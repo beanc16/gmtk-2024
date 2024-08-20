@@ -31,6 +31,9 @@ public class WinDetection : MonoBehaviour
         // Turn on/off necessary stuff
         List<GameObject> mergables = ToggleStuff(false);
 
+        // Play victory sound
+        AudioController.PlaySfx("Victory");
+
         // Update final score text
         winTextComponent.text = $"You merged {scoreTextManager.Score} bubbles!";
 

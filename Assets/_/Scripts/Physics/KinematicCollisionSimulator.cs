@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// For kinematic rigid bodies that want to simulate
@@ -45,6 +47,9 @@ public class KinematicCollisionSimulator : MonoBehaviour
                     {
                         // Simulate collision response
                         HandleCollision(otherCollider);
+
+                        // TODO: This is just for this game, this should be a UnityEvent in the future.
+                        AudioController.PlaySfx("Bubble Bounce");
                     }
                 }
             }
