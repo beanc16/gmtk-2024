@@ -4226,7 +4226,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 1686496650}
-  scrollSpeed: -50
+  scrollSpeed: -25
   targetHeightPercentage: 0.48
   numOfDesiredMerges: 250
   includeDebugLogs: 0

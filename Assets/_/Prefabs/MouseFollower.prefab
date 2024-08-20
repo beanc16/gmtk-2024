@@ -115,7 +115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ed040a66555b31f7b711e180a56c99d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  force: 150
+  force: 155
   polarity: 0
 --- !u!1 &1593370490379556471
 GameObject:
