@@ -454,7 +454,6 @@ GameObject:
   - component: {fileID: 261782042}
   - component: {fileID: 261782041}
   - component: {fileID: 261782040}
-  - component: {fileID: 261782039}
   - component: {fileID: 261782044}
   - component: {fileID: 261782043}
   m_Layer: 5
@@ -485,18 +484,6 @@ RectTransform:
   m_AnchoredPosition: {x: 275.13617, y: -62.5}
   m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &261782039
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 261782037}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c5ad0f7cb89eb36d9b3a6be0d0a3d26, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &261782040
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4675,6 +4662,7 @@ MonoBehaviour:
   scrollSpeed: -50
   targetHeightPercentage: 0.48
   numOfDesiredMerges: 250
+  includeDebugLogs: 0
 --- !u!1 &1643825899
 GameObject:
   m_ObjectHideFlags: 0
