@@ -28,7 +28,7 @@
 </div>
 
 <p align="center">
-  Blissful Bubble Merge is a relaxing merge game that was made in 48 hours for the 
+  Blissful Bubble Merge is a relaxing merge game that was made in 96 hours for the 
   <a href="https://itch.io/jam/gmtk-2024">
     GTMK 2024 Game Jam
   </a>
